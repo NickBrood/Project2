@@ -23,12 +23,18 @@ imagegif($image);
 imagedestroy($image);
 */
 
-
 #Pull data from database
 $database = new SQLite3('/home/pi/ece331/project2/templog.db');
-
 $results = $database->query('SELECT * FROM temps');
 
+#Stores the number of rows of temperature data in 'num_rows'
+$rows = $database->query("SELECT COUNT(*) as count FROM temps");
+$row1 = $rows->fetchArray();
+$num_rows = $row1['count'];
+
+var_dump($num_rows);
+
+#One by one prints out 
 while($row = $results->fetchArray()) {
 	var_dump($row);
 }
