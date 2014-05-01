@@ -1,20 +1,26 @@
 #!/usr/bin/python
+#
+#Nicholas Grant ECE331
+#Temp Sensor Temperature Data Logger
+#
+# Making use of i2ctools and sqlite3 to grab
+# temperature data from sensor and output it to
+# sqlite3 database in project folder.
 import smbus
 import time
 import sqlite3
 
 I2C_ADDRESS = 0x48
 
+#The device address is found on bus 1, confirmed by i2cdetect
 bus = smbus.SMBus(1)
 
-#Set all ports in input mode
+#Set mode
 bus.write_byte(I2C_ADDRESS, 0x0)
 
 #Read all input lines
 value = bus.read_byte(I2C_ADDRESS)
 print value
-#print "%02X" % value
-
 
 ####################################
 # Store temperature in a database  #
