@@ -1,11 +1,16 @@
 #!/usr/bin/python
 #
-#Nicholas Grant ECE331
-#Temp Sensor Temperature Data Logger
+# Nicholas Grant ECE331
+# Temp Sensor Temperature Data Logger (Python I2C end)
 #
 # Making use of i2ctools and sqlite3 to grab
 # temperature data from sensor and output it to
 # sqlite3 database in project folder.
+#
+# Sources Cited:
+# http://www.instructables.com/id/Raspberry-Pi-I2C-Python/
+# http://www.acmesystems.it/i2c
+
 import smbus
 import time
 import sqlite3

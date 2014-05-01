@@ -9,6 +9,13 @@
 # graph temperature in celsius
 # versus the time of day (in military time)
 #
+#
+# Sources Cited:
+# http://www.php.net/manual/en/book.image.php
+# http://www.w3schools.com/php/php_error.asp 
+# http://www.tutorialspoint.com/sqlite/sqlite_date_time.htm
+# http://www.phpbuilder.com/columns/allan20000830.php3?page=3 
+
 
 #phpinfo();
 #var_dump(gd_info());
