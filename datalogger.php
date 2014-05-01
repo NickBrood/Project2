@@ -3,7 +3,7 @@
 #phpinfo();
 #var_dump(gd_info());
 
-#Declare offsets from begginning
+#Declare offsets from beginning
 $xoffset = 50;
 $yoffset = 50;
 $xlength = 720;
@@ -36,6 +36,7 @@ ImageLine($image,50,50,50,770,$black);
 #Draw x axis
 ImageLine($image,50,768,770,768,$black);
 imagesetthickness($image, 1);
+
 #Draw grid
 $yaxinc = 5;
 for($p = 0; $p < 8; $p++){
@@ -47,23 +48,25 @@ for($m = 0; $m < 24; $m++){
 	ImageLine($image, $xoffset+($xaxinc*$m), $yoffset+$ylength, $xoffset+($xaxinc*$m), $yoffset, $black);
         ImageString($image, 5, $xoffset+($xaxinc*$m), $yoffset+$ylength+10, $m, $black);
 }
+
 #Draw titles
 $title = "Temperature Data Logger";
 $ytitle = "Temperature (Celsius)";
-$xtitle = "Time (Hours)";
+$xtitle = "Time (Hours of day - military)";
 ImageString($image, 5, 300, 25, $title, $black);
 ImageStringUp($image, 5, 3, 450, $ytitle, $black);
-ImageString($image, 5, 335, 795, $xtitle, $black);
+ImageString($image, 5, 300, 795, $xtitle, $black);
 
 #Pull data from database
 $database = new SQLite3('/home/pi/ece331/project2/templog.db');
 $results = $database->query('SELECT temp FROM temps DESC LIMIT 1440');
-$timestamps = $database->query('SELECT timestamp FROM temps');
+$minutes = $database->query('SELECT strftime("%M", time(timestamp)) FROM temps DESC LIMIT 1440');
+$hours = $database->query('SELECT strftime("%H", time(timestamp)) FROM temps DESC LIMIT 1440');
 
 #var_dump(gettype($timestamps));
 
 #Stores the number of rows of temperature data in 'num_rows'
-$rows = $database->query("SELECT COUNT(*) as count FROM temps");
+$rows = $database->query("SELECT COUNT(*) as count FROM temps DESC LIMIT 1440");
 $row1 = $rows->fetchArray();
 $num_rows = $row1['count'];
 
@@ -76,13 +79,21 @@ $i=0;
 #var_dump($xincrement);
 
 //Loop while we still have rows of data
-while($dataRow= $results->fetchArray()) {
+while(($dataRow= $results->fetchArray()) && ($timeHour = $hours->fetchArray()) && ($timeMinutes = $minutes->fetchArray())) {
 	
 	//Calculate y-coordinate
 	$y = $dataRow[0];
-	
-	#var_dump($x);
-#	var_dump($y);
+	//Calculate x-coordinate
+	$hx = intval($timeHour[0]);
+	$mx = intval($timeMinutes[0]);
+	$x = 50+(30*($hx + $mx*(1/60)));
+	/*
+	var_dump($hx);
+	var_dump($mx);
+		
+	var_dump($x);
+	var_dump($y);
+	*/
 
 	//Add values into points array
 	$points[$i][0] = $x;
@@ -91,8 +102,7 @@ while($dataRow= $results->fetchArray()) {
 #	var_dump(gettype($points[$i][0]));
 #	var_dump(gettype($points[$i][1]));
 
-	//Increment x by xincrement
-	$x+=$xincrement;
+	//Increment to keep track of points
 	$i++;
 }
 
